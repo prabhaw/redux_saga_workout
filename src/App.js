@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import landingActions from "./module/action";
 
 function App() {
+  const dispatch = useDispatch();
+
+  const landing = useSelector((state) => state.landing.homeContent);
+
+  const isEmpty = (obj) => {
+    return Array.isArray(obj)
+      ? obj.length === 0
+      : Object.keys(obj).length === 0;
+  };
+
+  useEffect(() => {
+    if (isEmpty(landing))
+      dispatch(landingActions.getDynamicContentRequest({ page: "home" }));
+  }, [dispatch, landing]);
+
+  useEffect(() => {
+    console.table(landing);
+  }, [landing]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h2>Post Title</h2>
+      {landing.map((item, i) => (
+        <div key={i}>{item.title}</div>
+      ))}
     </div>
   );
 }
